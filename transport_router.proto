@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+import "graph.proto";
+
+package transport_router_serialize;
+
+message RoutingSettings {
+	int32 wait_time = 1;
+	double velocity = 2;
+};
+
+message RouteEdgeInfo {
+	int32 start = 1;
+	int32 bus = 2;
+	int32 spans = 3;
+	int32 item_wait = 4;
+	double item_bus = 5;
+};
+
+message RouteInternalData {
+    	double weight = 1;
+	oneof edge {
+		uint32 prev_edge = 2;
+	}    
+};
+
+message RouteInternalDataOptional {
+	oneof datas_opt {
+		RouteInternalData datas = 1;
+	}
+}
+
+message RouteInternalDataVector {
+	repeated RouteInternalDataOptional datas = 1;
+}
+
+message Router {
+	repeated RouteInternalDataVector routes_internal_data = 1;
+	graph_serialize.Graph graph = 2;
+}
+
+message TransportRouter {
+	Router router = 1;
+	map<uint32, RouteEdgeInfo> edges_to_buses = 2;
+	RoutingSettings settings = 3;
+}
