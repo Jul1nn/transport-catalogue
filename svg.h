@@ -52,11 +52,6 @@ namespace svg {
         int indent = 0;
     };
 
-    /*
-     * Абстрактный базовый класс Object служит для унифицированного хранения
-     * конкретных тегов SVG-документа
-     * Реализует паттерн "Шаблонный метод" для вывода содержимого тега
-     */
     class Object {
     public:
         void Render(const RenderContext& context) const;
@@ -66,11 +61,6 @@ namespace svg {
     private:
         virtual void RenderObject(const RenderContext& context) const = 0;
     };
-
-    // Объявив в заголовочном файле константу со спецификатором inline,
-    // мы сделаем так, что она будет одной на все единицы трансляции,
-    // которые подключают этот заголовок.
-    // В противном случае каждая единица трансляции будет использовать свою копию этой константы
 
     struct Rgb {
         Rgb() = default;
@@ -208,9 +198,6 @@ namespace svg {
         // Добавляет очередную вершину к ломаной линии
         Polyline& AddPoint(Point point);
 
-        /*
-         * Прочие методы и данные, необходимые для реализации элемента <polyline>
-         */
     private:
         void RenderObject(const RenderContext& context) const override;
 
@@ -241,7 +228,6 @@ namespace svg {
         // Задаёт текстовое содержимое объекта (отображается внутри тега text)
         Text& SetData(std::string data);
 
-        // Прочие данные и методы, необходимые для реализации элемента <text>
     private:
         void RenderObject(const RenderContext& context) const override;
 
@@ -255,12 +241,7 @@ namespace svg {
 
     class ObjectContainer {
     public:
-        /*
-         Метод Add добавляет в svg-документ любой объект-наследник svg::Object.
-         Пример использования:
-         Document doc;
-         doc.Add(Circle().SetCenter({20, 30}).SetRadius(15));
-        */
+
         template <typename Obj>
         void Add(Obj obj) {
             auto obj_ptr = std::make_unique<Obj>(std::move(obj));
@@ -282,12 +263,10 @@ namespace svg {
         // Выводит в ostream svg-представление документа
         void Render(std::ostream& out) const;
 
-        // Прочие методы и данные, необходимые для реализации класса Document
     private:
         std::deque<std::unique_ptr<Object>> objects_;
     };
 
-    // Интерфейс Drawable унифицирует работу с объектами, которые можно нарисовать, подключив SVG-библиотеку
     class Drawable {
     public:
         virtual void Draw(ObjectContainer& obj) const = 0;

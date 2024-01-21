@@ -61,7 +61,6 @@ namespace svg {
     void Object::Render(const RenderContext& context) const {
         context.RenderIndent();
 
-        // Делегируем вывод тега своим подклассам
         RenderObject(context);
 
         context.out << std::endl;
@@ -140,11 +139,6 @@ namespace svg {
         text_ = data;
         return *this;
     }
-
-    /* Двойная кавычка " заменяется на &quot;
-    Одинарная кавычка или апостроф ' заменяется на &apos;
-    Символы < и > заменяются на &lt; и &gt; соответственно.
-    Амперсанд& заменяется на &amp; */
 
     void Text::RenderObject(const RenderContext& context) const {
         auto& out = context.out;
