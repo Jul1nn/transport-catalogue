@@ -203,12 +203,6 @@ Node LoadNode(std::istream& input) {
         case '"':
             return LoadString(input);
         case 't':
-            // Атрибут [[fallthrough]] (провалиться) ничего не делает, и является
-            // подсказкой компилятору и человеку, что здесь программист явно задумывал
-            // разрешить переход к инструкции следующей ветки case, а не случайно забыл
-            // написать break, return или throw.
-            // В данном случае, встретив t или f, переходим к попытке парсинга
-            // литералов true либо false
             [[fallthrough]];
         case 'f':
             input.putback(c);
@@ -279,10 +273,6 @@ void PrintValue<std::nullptr_t>(const std::nullptr_t&, const PrintContext& ctx) 
     ctx.out << "null"sv;
 }
 
-// В специализаци шаблона PrintValue для типа bool параметр value передаётся
-// по константной ссылке, как и в основном шаблоне.
-// В качестве альтернативы можно использовать перегрузку:
-// void PrintValue(bool value, const PrintContext& ctx);
 template <>
 void PrintValue<bool>(const bool& value, const PrintContext& ctx) {
     ctx.out << (value ? "true"sv : "false"sv);

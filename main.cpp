@@ -6,11 +6,9 @@
 
 #include <fstream>
 #include <iostream>
-#include <chrono>
 
 using namespace std;
 using namespace transport_catalogue;
-using namespace std::chrono;
 
 using namespace std::literals;
 
@@ -25,8 +23,7 @@ int main(int argc, char* argv[]) {
     }
     const std::string_view mode(argv[1]);
     if (mode == "make_base"sv) {
-    	auto start = high_resolution_clock::now();
-        ifstream fin("s14_3_opentest_3_make_base.json");
+        ifstream fin("make_base_example.json");
         JSONReader json_reader(fin);
         const transport_catalogue::catalogue::TransportCatalogue cat = json_reader.BrowseCatalogue();       
         RequestHandler handler(cat);
@@ -37,14 +34,9 @@ int main(int argc, char* argv[]) {
         Serializator serie = json_reader.BrowseSerialization();
         handler.InitializeSerializator(&serie);
         handler.Serialize();
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
- 
-    	cerr << "Time taken by make_base: " << duration.count() << " microseconds" << endl;
     }
     else if (mode == "process_requests"sv) {
-    	auto start = high_resolution_clock::now();
-        ifstream fin("s14_3_opentest_3_process_requests.json");
+        ifstream fin("process_requests_example.json");
         JSONReader json_reader(fin);
         Serializator ser = json_reader.BrowseSerialization();
         Serializator::DeserializationResult ds_result = ser.Deserialize();
@@ -52,10 +44,6 @@ int main(int argc, char* argv[]) {
         ofstream fout;
         fout.open("output.json");
         json_reader.PrintRequestJSON(fout, handler);
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
- 
-    	cerr << "Time taken by process_requests: " << duration.count() << " microseconds" << endl;
     }
     else {
         PrintUsage();
